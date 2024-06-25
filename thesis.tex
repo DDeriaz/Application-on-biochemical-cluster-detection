@@ -1,0 +1,743 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Preambule
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[a4paper]{book}
+\usepackage{cmbright} 	% modern font
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{graphicx}     % Required for including images
+\graphicspath{{figures/}} % Location of the graphics files
+\usepackage{amsmath,amssymb,chemist} 		% Equations
+\usepackage{booktabs} 	% Top and bottom rules for table
+\usepackage[font=small,labelfont=bf]{caption}
+% Required for specifying captions to tables and figures
+\usepackage{longtable}	% Table on several pages
+\usepackage{adjustbox} 	% Put max for size tables
+\usepackage{tikz}
+\usetikzlibrary{arrows,positioning} 
+\tikzset{
+    %Define standard arrow tip
+    >=stealth',
+    %Define style for boxes
+    punkt/.style={
+           rectangle,
+           rounded corners,
+           draw=black, very thick,
+           text width=6.5em,
+           minimum height=2em,
+           text centered},
+    % Define arrow style
+    pil/.style={
+           ->,
+           thick,
+           shorten <=2pt,
+           shorten >=2pt,}
+}
+\usepackage{hyperref}
+\hypersetup{
+    unicode=false,          	% non-Latin characters in Acrobat’s bookmarks
+    pdftoolbar=true,        	% show Acrobat’s toolbar?
+    pdfmenubar=true,        % show Acrobat’s menu?
+    pdffitwindow=false,     	% window fit to page when opened
+    pdfstartview={FitH},    	% fits the width of the page to the window
+    pdftitle={Master_Thesis},    		% title
+    pdfauthor={Denis Deriaz},     	% author
+    pdfsubject={master_thesis},   	% subject of the document
+    pdfcreator={Denis Deriaz},   	% creator of the document
+    pdfproducer={Denis Deriaz}, 	% producer of the document
+    pdfkeywords={statistics}, 		% list of keywords
+    pdfnewwindow=true, 	% links in new PDF window
+    colorlinks=true,       	% false: boxed links; true: colored links
+    linkcolor=black,          	% color of internal links 
+    % (change box color with linkbordercolor)
+    citecolor=black,        	% color of links to bibliography
+    filecolor=magenta,      	% color of file links
+    urlcolor=cyan           	% color of external links
+}
+\usepackage{csquotes}
+\usepackage{listings}
+\usepackage{lipsum}
+\usepackage{courier}
+\usepackage{pdfpages}
+\usepackage{geometry}
+\usepackage{appendix}
+\setlength\textwidth{16cm} % three lines code to make same left and right margins
+\setlength\oddsidemargin{\dimexpr(\paperwidth-\textwidth)/2 -1in\relax}
+\setlength\evensidemargin{\oddsidemargin}
+
+\lstset{basicstyle=\footnotesize\ttfamily,breaklines=true}
+\lstset{framextopmargin=50pt,frame=bottomline}
+
+\renewcommand{\mkbegdispquote}[2]{\itshape}
+\hyphenation{SKIPOGH}
+\hyphenation{EPOGH}
+\hyphenation{diagonalization}
+\hyphenation{Metalloids}
+\hyphenation{Euclidean}
+\hyphenation{boxplots}
+\hyphenation{Taylor}
+\author{Denis Deriaz}
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Cover
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\pagenumbering{Roman}
+\includepdf{cover}
+\includepdf{blank}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Acknowledgments
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter*{ }
+
+{\LARGE \textbf{Acknowledgments}} \\
+\\
+It was a real pleasure to study Statistics at the University of Neuchâtel. All the teachers were kind and encouraging. These studies allowed me to have a deeper understanding of the biomedical research. Moreover, the \texttt{R} courses given by Dr Alina Matei developed my knowledge in \texttt{R} such that I currently couldn't imagine another software than \texttt{R} to do Statistics.
+
+I would like also to thank Prof. Murielle Bochud at the Institute of Social and Preventive Medicine in Lausanne for giving her medical expertise and providing the medical data, and Claire Mudge for her English revision.
+
+\includepdf{blank}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Table of contents
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\tableofcontents
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Introduction AND Context
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\cleardoublepage\pagenumbering{arabic}
+\chapter{Introduction}
+
+\begin{quote}
+\vspace{1cm}
+\begin{flushright} \emph{Cluster analysis is the art of finding groups in data.} \end{flushright}
+\begin{flushright} --- Rousseeuw \end{flushright}
+\end{quote}
+\vspace{1cm}
+\input{thesis_intro}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Data description and preprocessing
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Data description and preprocessing}
+\label{ch:Data}
+
+\input{thesis_data}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Methods
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Methods}
+\label{ch:Methods}
+
+\input{thesis_methods}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Results
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Results}
+
+\input{thesis_results}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Conclusion
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Discussion}
+
+In the SKIPOGH data, 23.3\% of participants had hypertension. This is slightly lower than the worldwide prevalence estimated to $26.4\%$. Exploration of variable distributions showed very skewed distributions with extreme outliers. However, outliers were kept in the exploratory analysis since all were nevertheless realistic concentrations. Interestingly, principal component analysis (PCA) could help to distinguish between metal-mixtures and non-metals.  Thus, despite competition that often occurs between biochemical elements in physiological processes --- notably between elements sharing the same valence --- metal-mixtures and non-metals seem to be uncorrelated. Moreover, essential metal-mixtures were all isolated in the upper right quadrant, again suggesting different sources in dietary intakes or different physiological processes compared to other biochemical elements. However, multiple regression incorporating scores of principal components and adjusted for participants characteristics failed to predict hypertension. Then, two clusters were generated from the $k$-medoids algorithm. They displayed different biochemical patterns. However, silhouette width was small and clusters could not predict hypertension in multiple regressions adjusted for participants characteristics.
+
+In supplementary analyses, we performed other regression models using observed covariates with backward elimination of variables minimizing the Akaike information criterion (AIC). These models performed better than those incorporating PCA and cluster information. Moreover, vanadium and zinc predicted higher SBP, which is consistent with the literature. Moreover, the predicted probability to develop hypertension was higher with increments of zinc concentrations in a logistic regression. This underlines the fact that essential metal-mixtures can lead to hypertension when they are in excessive quantities. However, significant estimated coefficients were not found for mercury and cadmium which are toxic metal-mixtures with cardiovascular effects \cite{cosselman_environmental_2015}.
+
+There are several reasons for finding no significant estimated coefficient for biochemical patterns in the first analyses. Firstly, it is highly likely that main metal-mixtures and non-metals simply contribute little to hypertension compared to classical risk factors for hypertension such as age, male sex and diabetes. Secondly, significant effects can be hidden by non-significant effects in PCA and cluster analysis methods that incorporate all the variables. Restricted choice of variables from medical expertise, adapted regression methods such as minimizing AIC or Lasso and Ridge regressions can deal situations with variables that participate not to the total variance. Moreover, SBP and DBP --- that are not independent between each other --- could be studied together instead of separately in more complex models such as neural networks allowing multiple outputs. Thirdly, longitudinal studies may be more sensitive to detect an association between metal-mixtures and hypertension.
+
+\newpage
+
+In conclusion, if heterogeneous biochemical patterns could be distinguished in the SKIPOGH data, they could predict neither systolic, diastolic blood pressure nor hypertension cases using multiple regressions. Restricted variable selection for multiple regression models gave better models.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Bibliography
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\bibliography{biblio}
+\bibliographystyle{acm}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Appendix
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\appendix
+\appendixpage
+\addappheadtotoc
+
+\chapter*{Abbreviations}
+
+\begin{verbatim}
+cpnbr: participant number
+age: age, years
+sex01: sex (1=male)
+diabetes: diabetes (1=yes)
+d_hta: anti-hypertensive drugs, (1=yes)
+tg: triglycerides, mmol/l
+cho: cholesterol, mmol/l
+glu: blood glucose, mmol/l
+ins2s: blood insulin, microIU/ml
+Li_h24_excr: lithium, ng
+Be_h24_excr: beryllium, ng
+Al_h24_excr: aluminum, ng
+V_h24_excr: vanadium, ng
+Cr_h24_excr: chrome, ng
+Mn_h24_excr: manganese, ng
+Co_h24_excr: cobalt, ng
+Ni_h24_excr: nickel, ng
+Cu_h24_excr: copper, ng
+Zn_h24_excr: zinc, ng
+As_h24_excr: arsenic, ng
+Mo_h24_excr: molybdenum, ng
+Pd_h24_excr: palladium, ng
+Ag_h24_excr: silver, ng
+Cd_h24_excr: cadmium, ng
+Sn_h24_excr: tin, ng
+Sb_h24_excr: antimony, ng
+Pt_h24_excr: platinum, ng
+Hg_h24_excr: mercury, ng
+Tl_h24_excr: thallium, ng
+Pb_h24_excr: lead, ng
+Bi_h24_excr: bismuth, ng
+una_u24_mmol: sodium, mmol
+uk_u24_mmol: potassium, mmol
+uca_u24_mmol: calcium, mmol
+upo4_u24_mmol: phosphate, mmol
+uure_u24_mmol: urea, mmol
+umg_u24_mmol: magnesium, mmol
+sbp_mean: systolic blood pressure, mmHg
+dbp_mean: diastolic blood pressure, mmHg
+hta: medical hypertension (1=yes)
+\end{verbatim}
+
+
+\chapter*{\texttt{R}-code: PAM program}
+
+\begin{lstlisting}[language=R]
+# PAM PROGRAM IN R
+
+# I) Enter the inital cluster configuration
+set.seed(123)
+data<-runif(20)
+x<-data[1:10]
+y<-data[11:20]
+X<-round(cbind(x,y),2)
+X<-cbind(X,c(0,0,0,0,0,0,1,0,1,0))
+# We added a third column to specify by "1"
+# which observations are initial medoids.
+colnames(X)[3]<-"m"
+X # X is the initial cluster configuration
+
+# II) create a cost function in function of the
+#     current cluster configuration X
+cost_fun<-function(X){
+  N<-nrow(X)
+  K<-sum(X[,3])
+  mi<-which(X[,3]==1)
+  oi<-which(X[,3]==0)
+  costs<-rep(NA,time=N)
+  D<-as.matrix(dist(X[,-3],method="euclidean",upper = T,diag=T))
+  for(i in 1:N){
+    costs[i]<-min(D[i,mi])
+  }
+  result<-sum(costs)
+  return(result)
+}
+
+# III)  using cost function, return the next cluster
+#       configuration in functon of current configuration
+one_it_PAM<-function(X){
+  N<-nrow(X)
+  K<-sum(X[,3])
+  mi<-which(X[,3]==1)
+  oi<-which(X[,3]==0)
+  ci<-cost_fun(X)
+  cost<-rep(NA,time=K*(N-K))
+  C<-cbind(expand.grid(mi,oi),cost)
+  nswap<-nrow(C)
+  for(i in 1:nswap){
+    X_swap<-X
+    X_swap[C[i,2],3]<-1
+    X_swap[C[i,1],3]<-0
+    C[i,3]<-cost_fun(X_swap)
+  }
+  best_swap<-which.min(C[,3])
+  X_best<-X
+  X_best[C[best_swap,2],3]<-1
+  X_best[C[best_swap,1],3]<-0
+  if(cost_fun(X_best)<cost_fun(X)) return(X_best)
+    else return(X)
+}
+
+#############################################
+#############################################
+#############################################
+
+# Example
+X
+X2<-one_it_PAM(X)
+X2
+X3<-one_it_PAM(X2)
+X3
+X4<-one_it_PAM(X3)
+X4 # stabilisation after 2 iterations
+\end{lstlisting}
+
+\chapter*{\texttt{R}-code: whole code}
+
+\begin{lstlisting}[language=R]
+#################################################
+# MASTER THESIS DENIS DERIAZ 2018               #
+#                                               #
+# APPLICATION ON BIOCHEMICAL CLUSTER DETECTION  #
+# PROFESSOR: ALINA MATEI                        #
+#################################################
+
+#Working directory
+setwd("C:/Users/erabl/Documents/01_Statistiques_UNINE/Master_thesis/urine_analysis20181005")
+
+#Packages used
+library(psych) # for LaTeX tables
+library(ggplot2) # for correlation matrix
+library(ggcorrplot) # for correlation matrix
+library(FactoMineR) # for PCA
+library(cluster) # for gower similarity and pam
+library(flexclust) #randIndex() function
+library(car) #levene test
+
+#######################################################################
+#######################################################################
+###################################################### DATA PREPARATION
+
+#Opening row data: data_urine.txt
+XU<-read.table("C:/Users/erabl/Documents/01_Statistiques_UNINE/Master_thesis/data/20181008_SKIPOGH/data_urine1.txt")
+#data from "Master_thesis/script00000000.R"
+
+#Missing values
+nrow(XU) #1254 obs
+missing_count<-XU[1,]
+for(i in 1:ncol(missing_count)) missing_count[i]<-length(which(is.na(XU[,i])==T))
+t(missing_count)
+XUnona<-na.omit(XU)
+nrow(XU)     # 1254
+nrow(XUnona) # 609
+
+#Histograms of continuous distributions
+var_cont<-c(2,6:39)
+for(k in var_cont){
+  hist(XUnona[,k],main=colnames(XUnona)[k])
+}
+
+#Removing max insulin obs
+max(XUnona[,9])
+which(XUnona[,9]==max(XUnona[,9])) #obs 218
+XUnona<-XUnona[-218,]
+dim(XUnona)
+
+#We log-transform graphically positive skewed distr
+colnames(XUnona) #10:31
+XUnonal<-XUnona
+for(i in c(10:31)){
+  XUnonal[,i]<-log(XUnona[,i])
+}
+
+#Checking again for continuous distributions
+var_cont<-c(2,6:39)
+for(k in var_cont){
+  hist(XUnonal[,k],main=colnames(XUnonal)[k])
+}
+
+#Standardizing: mean0 sd1
+XUnonalstd<-XUnonal[c(10:37)]
+for(i in 1:ncol(XUnonalstd)){
+  XUnonalstd[,i]<-(XUnonalstd[,i]-mean(XUnonalstd[,i]))/sd(XUnonalstd[,i])
+}
+XUnonalstd<-cbind(XUnonalstd,XUnona[,40])
+dim(XUnonalstd)
+
+#######################################################################
+#######################################################################
+############################################## VARIABLE CHARACTERISTICS
+var_cont<-c(2,6:39)  # label for continuous var
+var_cat<-c(3,4,5,40) # label for categorical var
+
+prettynames<-c("participant's number","age, years",
+               "sex (1=male)", "diabetes (1=yes)",
+               "anti-hypertensive drugs, (1=yes)",
+               "triglycerides, mmol/l","cholesterol, mmol/l",
+               "blood glucose, mmol/l","blood insulin, microIU/ml",
+               "lithium, ng", "beryllium, ng", "aluminum, ng",
+               "vanadium, ng", "chrome, ng", "manganese, ng",
+               "cobalt, ng", "nickel, ng","copper, ng",
+               "zinc, ng","arsenic, ng","molybdenum, ng",
+               "palladium, ng","silver, ng","cadmium, ng",
+               "tin, ng", "antimony, ng", "platinum, ng",
+               "mercury, ng", "thallium, ng", "lead, ng", "bismuth, ng",
+               "sodium, mmol", "potassium, mmol", "calcium, mmol",
+               "phosphate, mmol", "urea, mmol","magnesium, mmol",
+               "systolic blood pressure, mmHg",
+               "diastolic blood pressure, mmHg",
+               "medical hypertension (1=yes)")
+
+#Description table for continuous var
+colnames(XUnona)<-prettynames
+des_var_cont<-round(describe(XUnona[var_cont],IQR=T),1)[,-c(1,2,6,7,8,9,10,13)]
+des_var_cont<-des_var_cont[c(1,2,3,6,4,5)]
+#write.table(des_var_cont,"C:/Users/erabl/Documents/01_Statistiques_UNINE/Master_thesis/thesis/des_cont_var.txt",eol="\\\\\n",quote=F,sep="&",
+#            row.names = T,col.names = F)
+
+# Illustration kurtosis
+#attach(XUnona)
+#png("C:/Users/erabl/Documents/01_Statistiques_UNINE/Master_thesis/thesis/figures/outlier1.png",width = 404, height=404)
+#par(mfrow=c(1,1))
+#boxplot(`thallium, ng`,main="thallium with eo, ng")
+#dev.off()
+#png("C:/Users/erabl/Documents/01_Statistiques_UNINE/Master_thesis/thesis/figures/outlier2.png",width = 404, height=404)
+#par(mfrow=c(1,1))
+#boxplot(`thallium, ng`[-520],main="thallium without eo, ng")
+#dev.off()
+
+#Description table for categorical var
+for(m in var_cat){
+  print(colnames(XUnona)[m])
+  print(table(XUnona[,m]))
+  print(table(XUnona[,m])/608)
+}
+
+# Reasons of hypertension
+c_d=0
+c_sbp=0
+c_dbp=0
+for(i in which(XUnona[,40]=="hta")){
+  if(XUnona[i,5]=="Yes") c_d=c_d+1
+  if(XUnona[i,38]>140) c_sbp=c_sbp+1
+  if(XUnona[i,39]>90) c_dbp=c_dbp+1
+}
+list(nobs_drugs=c_d,nobs_sbp=c_sbp,nobs_dbp=c_dbp)
+
+#######################################################################
+#######################################################################
+#################################################### CORRELATION MATRIX
+colnames(XUnonal)<-prettynames
+CM<-cor(XUnonal[,10:37])
+pmatCM<-cor_pmat(XUnonal[,10:37])
+ggcorrplot(CM,method=c("circle"),colors=c("purple","white","red"),
+           p.mat=pmatCM,hc.order = T, type = "lo")
+# width 1000 for output
+
+#######################################################################
+#######################################################################
+################################################################### PCA
+
+#pca objects
+pca_ind<-PCA(XUnonalstd,quali.sup = 29)
+par(mfrow=c(1,1),cex=0.4)
+pca_var<-PCA(XUnonalstd[,-29])
+pca_var$eig
+
+#Plot pca var
+#png("C:/Users/erabl/Documents/01_Statistiques_UNINE/Master_thesis/thesis/figures/pca_var.png",width = 790,height = 790)
+par(mfrow=c(1,1),cex=1.6)
+plot(pca_var,col.var = c(rep("maroon",time=22),rep("orange",time=6)),choix = "var",cex=0.9)
+#dev.off()
+
+#Plot pca ind
+#png("C:/Users/erabl/Documents/01_Statistiques_UNINE/Master_thesis/thesis/figures/pca_ind.png",width = 790,height = 790)
+par(mfrow=c(1,1),cex=1.6)
+plot(pca_ind,habillage = 29,choix = "ind",col.hab = c("red","black"),
+     label = "none",cex=1.4)
+#dev.off()
+
+#Plot tox
+esslab<-c(0,0,0,0,0,1,1,0,1,1,0,1,rep(0,time=16))
+labtox<-rep("gray",time=28)
+for(i in 1:28){
+  if(esslab[i]==1) labtox[i]<-"black"
+}
+#png("C:/Users/erabl/Documents/01_Statistiques_UNINE/Master_thesis/thesis/figures/pca_toxic.png",width = 790,height = 790)
+#par(mfrow=c(1,1),cex=1.6)
+plot(pca_var,col.var = labtox,choix = "var",cex=0.9)
+#dev.off()
+
+#comp
+comp1<-pca_ind$ind$coord[,1]
+comp2<-pca_ind$ind$coord[,2]
+
+#boxplots comp 1 and 2
+#png("C:/Users/erabl/Documents/01_Statistiques_UNINE/Master_thesis/thesis/figures/PC1scores.png",width = 404,height = 404)
+par(mfrow=c(1,1))
+boxplot(comp1~XUnona[,40],main="PC 1 (global exposure)")
+#dev.off()
+#png("C:/Users/erabl/Documents/01_Statistiques_UNINE/Master_thesis/thesis/figures/PC2scores.png",width = 404,height = 404)
+par(mfrow=c(1,1))
+boxplot(comp2~XUnona[,40],main="PC 2 (Na-Ca-Po4-urea-Mg)")
+#dev.off()
+t.test(comp1~XUnona[,40],var.equal=T)
+t.test(comp2~XUnona[,40],var.equal=T)
+
+#######################################################################
+#######################################################################
+############################################################ Clustering
+
+#SPECIFIC DATA PREPARATION FOR CLUSTERING PROCESS
+
+colnames(XUnonal) # current data
+
+boxplot(log(XUnonal[,9])) # insuline needs to be log transformed
+boxplot(XUnonal[,6])
+boxplot(log(XUnonal[,6])) # tri needs to be log transformed
+boxplot(XUnonal[,8])
+boxplot(log(XUnonal[,8])) # glu needs to be log transformed
+
+#We log-transform graphically positive skewed distr
+colnames(XUnona) #6,8,9,10:31
+XUnonal<-XUnona
+for(i in c(6,8,9,10:31)){
+  XUnonal[,i]<-log(XUnona[,i])
+}
+
+#Preparing XUnonal for daisy function
+XUnonalG<-XUnonal
+for(i in var_cont){
+  XUnonalG[,i]<-as.numeric(XUnonal[,i])
+}
+for(i in var_cat){
+  XUnonalG[,i]<-as.factor(XUnonal[,i])
+}
+colnames(XUnonalG)
+var_cont
+for(i in var_cont){
+  XUnonalG[,i]<-(XUnonalG[,i]-mean(XUnonalG[,i]))/sd(XUnonalG[,i])
+}
+
+# CLUSTERING PROCESS
+
+# I) Distance matrix
+mydaisy<-daisy(XUnonalG[,10:37],metric = "manhattan")
+range(as.matrix(mydaisy))
+# mydaisytoplot needs to be between 0 and 1 (0: black, 1: white)
+mydaisytoplot<-as.matrix(mydaisy)*0.999999/99.05336
+range(mydaisytoplot)
+#png("C:/Users/erabl/Documents/01_Statistiques_UNINE/Master_thesis/thesis2/figures/distancematrix.png")
+image(1:608,1:608,mydaisytoplot,
+      xlab = " ",ylab = " ",main="Distance matrix")
+#dev.off()
+
+# II and III) number of clusters
+# Calculate silhouette width for many k using PAM
+sil_width <- c(NA)
+for(i in 2:10){
+  pam_fit <- pam(mydaisy,
+                 diss = T,
+                 k = i)
+  sil_width[i] <- pam_fit$silinfo$avg.width
+}
+
+#Plot of sihouette width
+#png("C:/Users/erabl/Documents/01_Statistiques_UNINE/Master_thesis/thesis2/figures/silhouette.png")
+par(mfrow=c(1,1))
+plot(1:10, sil_width,
+     xlab = "Number of clusters",
+     ylab = "Silhouette Width",xlim=c(1,10),xaxt='n')
+axis(side = 1, at=2:10)
+lines(1:10, sil_width)
+abline(v=2,lty=2,col="red")
+abline(h=sil_width[2],lty=2,col="red")
+#dev.off()
+#k=3 shows tho greater silhouette width
+
+#Distance matrix befor and after clustering
+mycluster<-pam(mydaisy,diss = TRUE,k = 2)
+cluster<-as.factor(mycluster$clustering)
+c1<-which(cluster==1)
+c2<-which(cluster==2)
+#png("C:/Users/erabl/Documents/01_Statistiques_UNINE/Master_thesis/thesis2/figures/dma.png",width = 404,height = 404)
+par(mfrow=c(1,1))
+image(1:608,1:608,mydaisytoplot,
+      xlab = " ",ylab = " ",main="a")
+#dev.off()
+#png("C:/Users/erabl/Documents/01_Statistiques_UNINE/Master_thesis/thesis2/figures/dmb.png",width = 404,height = 404)
+par(mfrow=c(1,1))
+image(1:608,1:608,mydaisytoplot[c(c1,c2),c(c1,c2)],
+      xlab = " ",ylab = " ",main="b")
+#dev.off()
+
+#PCs by cluster ID
+#png("C:/Users/erabl/Documents/01_Statistiques_UNINE/Master_thesis/thesis2/figures/ttestc1.png",width = 404,height = 404)
+#par(mfrow=c(1,1))
+boxplot(comp1~cluster,main="First PC by cluster (p<0.05)")
+#dev.off()
+t.test(comp1~cluster,var.equal=T)
+#png("C:/Users/erabl/Documents/01_Statistiques_UNINE/Master_thesis/thesis2/figures/ttestc2.png",width = 404,height = 404)
+#par(mfrow=c(1,1))
+boxplot(comp2~cluster,main="Second PC by cluster (p<0.05)")
+#dev.off()
+t.test(comp2~cluster,var.equal=T)
+
+#Cluster stability (functions from resampling_methods.R)
+Xcat<-XUnonal[,var_cat]
+Xcont<-XUnonal[,var_cont]
+Xcat[,1]<-as.numeric(Xcat[,1])-1 # 1:M
+Xcat[,2]<-as.numeric(Xcat[,2])   # 1:diabetes
+Xcat[,3]<-as.numeric(Xcat[,3])-1 # 1:anti-hta drug
+Xcat[,4]<-2-as.numeric(Xcat[,4]) # 1:hta
+XUnonal2<-XUnonal
+XUnonal2[,var_cat]<-Xcat
+XUnonal2[,var_cont]<-Xcont
+XUnonal2std<-XUnonal2
+for(i in 1:ncol(XUnonal2std)){
+  XUnonal2std[,i]<-(XUnonal2[,i]-mean(XUnonal2[,i]))/sd(XUnonal2[,i])
+}
+dim(XUnonal2std)
+
+ri_pam_bo<-function(data,k,metric="gower"){
+  n<-nrow(data)
+  # in the bootstrap version S,D and E have size n
+  indS<-sample(x=c(1:n),size = n,replace = T)
+  indD<-sample(x=c(1:n),size = n,replace = T)
+  S<-data[indS,]          # training set S
+  D<-data[indD,]          # training set D
+  E<-data                 # evaluation set E
+  ne<-nrow(E)
+  dissS<-daisy(S,metric =metric,warnType = F)
+  dissD<-daisy(D,metric =metric,warnType = F)
+  Cs<-pam(dissS,diss=T,k=k)
+  Cd<-pam(dissD,diss=T,k=k)
+  distmedCs<-as.matrix(daisy(rbind(E,data[Cs$id.med,]),
+                             metric = metric,warnType = F))[c(1:ne),-c(1:ne)]
+  distmedCd<-as.matrix(daisy(rbind(E,data[Cd$id.med,]),
+                             metric = metric,warnType = F))[c(1:ne),-c(1:ne)]
+  # assign each point of E to the closest meloid of Cs and Cd
+  indCs<-rep(NA,time=ne)
+  indCd<-rep(NA,time=ne)
+  for(j in 1:ne){
+    indCs[j]<-which.min(distmedCs[j,])
+    indCd[j]<-which.min(distmedCd[j,])
+  }
+  # compare output and measure stability with rand index
+  # corrected for agreement by chance
+  s<-randIndex(table(indCs,indCd),correct = T)
+  return(s)
+}
+
+k=2
+B=10 #put B=1000
+M<-matrix(0,B,ncol=2)
+for(i in 1:B){
+  M[i,1]<-ri_pam_bo(XUnonal2std[,10:37],k,"euclidean")
+  M[i,2]<-ri_pam_bo(XUnonal2std[,10:37],k,"manhattan")
+}
+
+#png("C:/Users/erabl/Documents/01_Statistiques_UNINE/Master_thesis/thesis2/figures/stabmetric.png",width = 404,height = 404)
+par(mfrow=c(1,1))
+boxplot(M,main=" ",names=c("Euclidean","Manhattan"))
+#dev.off()
+
+#bootstrapped replicates
+round(colMeans(M),3)
+round(c(sd(M[,1]),sd(M[,2])),3)
+wilcox.test(x=M[,1],y=M[,2],exact=T,alternative = "two.sided")
+
+#######################################################################
+#######################################################################
+########################################################### REGRESSIONS
+
+# REGRESSIONS FROM PC SCORES
+
+colnames(XUnonal)<-colnames(XU)
+m1<-lm(sbp_mean~comp1+comp2+age+sex01+diabetes+tg+cho+glu+ins2s+d_hta,data=XUnonal)
+m2<-lm(dbp_mean~comp1+comp2+age+sex01+diabetes+tg+cho+glu+ins2s+d_hta,data=XUnonal)
+m2r<-lm(dbp_mean~comp1+comp2+age+sex01+cho+glu*diabetes,data=XUnonal)
+summary(m1)
+summary(m2)
+summary(m2r)
+
+# logistic
+colnames(XUnonal)<-colnames(XU)
+m3<-glm(hta~comp1+comp2+age+sex01+diabetes+tg+cho+glu+ins2s,data=XUnonal,family="binomial")
+summary(m3) # --> but predicting "no hta" !
+levels(XUnonal$hta)
+hta01<-factor(XUnonal$hta,levels = c("No hta","hta"))
+m3<-glm(hta01~comp1+comp2+age+sex01+diabetes+tg+cho+glu+ins2s,data=XUnonal,family="binomial")
+summary(m3) #--> predicting "hta"
+
+# likelihood ratio test for the logistic model
+mnull<-glm(hta01~1,family = "binomial",data=XUnonal)
+anova(mnull,m3,test="Chisq")
+
+# REGRESSIONS FROM CLUSTER ID
+
+#pred with reg
+m4<-lm(sbp_mean~cluster+age+sex01+diabetes+tg+cho+glu+ins2s+d_hta,data = XUnonal)
+m5<-lm(dbp_mean~cluster+age+sex01+diabetes+tg+cho+glu+ins2s+d_hta,data = XUnonal)
+m6<-glm(hta01~cluster+age+sex01+diabetes+tg+cho+glu+ins2s,family = "binomial",data = XUnonal)
+summary(m4) #no pred
+summary(m5) #no pred
+par(mfrow=c(2,3),pty="s")
+plot(m4,which = 1:6)
+summary(m6) 
+
+# likelihood ratio test for the logistic model
+mnull<-glm(hta01~1,family = "binomial",data=XUnonal)
+anova(mnull,m6,test="Chisq")
+
+#odd ratio c3
+coef(m6)
+or<-exp(coef(m6)[3])
+se<-sqrt(vcov(m6)[3,3])
+#95 CI
+or
+c(exp(log(or)-1.96*se),exp(log(or)+1.96*se)) 
+
+table(hta01[which(cluster==3)])
+111/114
+
+# OTHER REGRESSIONS
+
+# MA
+MA<-step(lm(sbp_mean~.,data=XUnonal[,-c(1,39,40)]),direction = "backward")
+MB<-step(lm(dbp_mean~.,data=XUnonal[,-c(1,38,40)]),direction = "backward")
+MC<-step(glm(hta01~.,data = XUnonal[,-c(1,38,39,5,40)],family = "binomial"),direction = "backward")
+MAfull<-lm(sbp_mean~.,data=XUnonal[,-c(1,39,40)])
+MBfull<-lm(dbp_mean~.,data = XUnonal[,-c(1,38,40)])
+MCfull<-glm(hta01~.,data=XUnonal[,-c(1,5,38,39,40)],family="binomial")
+
+AIC(MA,MAfull)
+AIC(MB,MBfull)
+AIC(MC,MCfull)
+
+# likelihood ratio test for the logistic model
+mnull<-glm(hta01~1,family = "binomial")
+anova(mnull,MC,test="Chisq")
+
+#######################################################################
+#######################################################################
+########################################################## Abbrev table
+
+abbrev<-cbind(colnames(XU),prettynames)
+colnames(abbrev)<-c("abbreviation","description")
+
+#write.table(abbrev,"C:/Users/erabl/Documents/01_Statistiques_UNINE/Master_thesis/thesis/des_abbrev.txt",eol="\n",quote=F,sep=": ",
+#            row.names = F,col.names = F)
+\end{lstlisting}
+
+\end{document} 
+
+
+
+

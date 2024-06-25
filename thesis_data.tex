@@ -1,0 +1,123 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Data description and preprocessing
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Data collection}
+The main objective of SKIPOGH is to examine the genetic and environmental determinants of hypertension. SKIPOGH is a cross-sectional substudy of a larger European study (EPOGH: European Project on Genes in Hypertension). It is a multi-center study with participants being recruited in the cantons of Bern, Geneva, and Vaud. However, we will use only the SKIPOGH data of the participants recruited in Lausanne. The study design was a simple random sampling without replacement (SRSWOR) from the city of Lausanne's registry. Selected participants where then contacted by mail. The participation rate was 20\% in Lausanne. The examination started in December 2009 and ended in April 2012. Inclusion criteria were: a) written informed consent; b) minimum age of 18 years; c) of European descent (defined as having both parents and grandparents born in a restricted list of countries) and d) at least one, and ideally three, first degree family members also willing to participate in the study. Thus, SKIPOGH is a family and individual sample from the city of Lausanne \cite{alwan_epidemiology_2014}.
+
+
+\subsection{Medical questionnaire, clinical and biological data}
+Participants were asked to complete a questionnaire at home about their lifestyle habits, medical history and current medication. In particular, they were asked about their age, sex and eventual anti-hypertensive and anti-diabetic treatment.
+
+The participants came to the University Hospital from Lausanne for a clinical examination, after an overnight fast. During the visit, participants' blood pressure values (both SBP and DBP) were measured 5 times every 5 minutes with a sphygmomanometer (device: A\&D UM-101; A\&D Company, Toshima Ku, Tokyo, Japan). Since the first blood pressure values are often known to be higher than subsequent values due to \emph{white coat hypertension}\footnote{White coat hypertension occurs when blood pressure in a office or hospital is higher than blood pressure at home. It is a false positive case of hypertension sometimes believed to be related to the stress a patient feels at the beginning of a doctor's visit \cite{kasper_harrisons_2015}.}, the mean of both the last four SBP and the last four DBP values were computed. These two mean values are respectively the variables \texttt{sbp\_mean} and \texttt{dbp\_mean} in the later described \emph{urine} data that we used. Moreover, participants had to wear a 24-hour ambulatory blood pressure monitoring device on a day chosen for typical weekly activity. This device records blood pressure every 10 minutes during the day and every 30 minutes during the night. The variables for the 24-hour ambulatory blood pressure mean values are \texttt{sbp\_24} and \texttt{dbp\_24} for SBP and DBP, respectively. This last method is able to detect white coat hypertension better than blood pressure measured during the visit. Moreover, this method has shown to be a much stronger predictor of cardiovascular morbidity and mortality than visit measurements \cite{obrien_european_2013}.
+
+Biological data (venous blood samples and urine samples) were obtained during the visit. Venous blood glucose, lipid profile and renal function tests as well as serum and urinary electrolytes were analyzed by standard clinical methods. Participants were also asked to collect a 24-hour urine sample for the measurement of urinary volume and concentrations of biochemical elements \cite{alwan_epidemiology_2014}.
+
+24-hour urine excretion ($\hat{Q}$) of a biochemical element was estimated by multiplying its sample concentration ($C$) by 24-hour urine volume ($V$) :
+\begin{equation*}
+\hat{Q} = C \cdot V.
+\end{equation*}
+
+\subsection{Defining hypertension}
+The variables in \emph{urine} data related to hypertension are defined below:
+\begin{itemize}
+\item \texttt{sbp\_mean}: the mean of the last four measurements of office SBP,
+\item \texttt{dbp\_mean}: the mean of the last four measurements of office DBP,
+\item \texttt{d\_hta}: treated for hypertension (1: yes, 0: no).
+\end{itemize}
+
+According to the definition of hypertension, a binary variable considering both measured blood pressure values with reference to threshold values and anti-hypertensive treatment was generated from the following pseudo-code where $n$ indicates the number of observations \cite{kearney_global_2005,kearney_worldwide_2004}:
+\begin{itemize}
+\item \texttt{hta}: hypertension (1: yes, 0: no)
+\end{itemize}
+
+\begin{verbatim}
+# generating hta
+for(i in 1:length(hta))
+  if(is.na(d_hta[i])==F & is.na(sbp_mean[i])==F 
+     & is.na(dbp_mean[i])==F)
+    { hta[i]<-0
+    if(d_hta[i]=="Yes" | sbp_mean[i]>140| dbp_mean[i])>90)
+      hta[i]<-1
+    }
+\end{verbatim}
+
+\section{Description of \emph{urine} data}
+\emph{Urine} data is a data frame with $n=1254$ observations and $p=40$ variables. A description of the data is summarized in Table \ref{table:data_urine_description}.
+
+\begin{center}
+\small
+\captionof{table}{Description of \emph{urine} data ($n=1254$, $p=40$).}
+\begin{longtable}{ p{0.33\linewidth -2\tabcolsep} p{0.17\linewidth-2\tabcolsep} p{0.35\linewidth-2\tabcolsep} p{0.15\linewidth-2\tabcolsep} }
+\hline
+Variable & Type of \par variable & Taken values \par (range or levels) & Count of \par missing \par values \\
+\hline
+\endfirsthead
+\multicolumn{4}{c}
+{\tablename\ \thetable\ -- \textit{Continued from previous page}} \\
+\hline
+Variable & Type of \par variable & Taken values \par (range or levels) & Count of \par missing \par values \\
+\hline
+\endhead
+\hline \multicolumn{4}{r}{\textit{Continued on next page}} \\
+\endfoot
+\hline
+\endlastfoot
+Participant number & Ordinal & $[11, \dots, 775]$ & 122 \\
+Age in years 	& Continuous & $[18.0 - 90.0]$ & 126 \\
+Sex & Binary & ``F'' for female and \par ``M'' for male & 126 \\
+Diabetes & Binary & 1 for presence and \par 0 for absence & 126 \\
+Anti-hypertensive \par treatment & Binary & 1 for presence and \par 0 for absence & 129 \\
+Triglycerides in mmol/l & Continuous & $[0.07 - 6.89]$ & 135 \\
+Cholesterol in mmol/l   & Continuous & $[2.50 - 8.29]$ & 136 \\
+Blood glucose in mmol/l & Continuous & $[2.50 - 8.29]$ & 134 \\
+Blood insulin in $\mu IU/ml$ & Continuous & $[1 - 6150]$ & 160 \\
+Lithium 24h urine\par excretion in ng  & Continuous &$[5771.841 - 1,031,290]$ & 410 \\
+Beryllium 24h urine\par excretion in ng & Continuous &$[0.091 - 105.759]$ & 410 \\
+Aluminum 24h urine\par excretion in ng & Continuous & $[378.061 - 1371,304]$ & 410 \\
+Vanadium 24h urine \par excretion in ng & Continuous &$[ 120.655 -  7945.755]$ & 410 \\
+Chrome 24h urine\par excretion in ng & Continuous &$[ 282.013  -  32518.580]$ & 410 \\
+Manganese 24h urine \par excretion in ng & Continuous &$[13.632  -  16948.660]$ & 410 \\
+Cobalt 24h urine\par excretion in ng & Continuous &$[41.007  -  78001.220]$ & 410 \\
+Nickel 24h urine\par excretion in ng & Continuous &$[ 122.465  -  51160.050]$ & 410 \\
+Copper 24h urine\par excretion in ng  & Continuous &$[ 3680.734  -  1184042]$ & 410 \\
+Zinc 24h urine \par excretion in ng & Continuous & $[ 44724.680  -  3018641]$ & 410 \\
+Arsenic 24h urine\par excretion in ng & Continuous & $[1683.906  -  3780762]$ & 410 \\
+Molybdenum 24h urine \par excretion in ng & Continuous &$[  4487.893  -  736741.300]$ & 410 \\
+Palladium 24h urine\par excretion in ng & Continuous &$[ 11.671 -  5907.260]$ & 410 \\
+Silver 24h urine\par excretion in ng & Continuous &  $[7.395  -  6960.549]$ & 410 \\
+Cadmium 24h urine \par excretion in ng & Continuous & $[ 58.527  -  3050.796]$ & 410 \\
+Tin 24h urine \par excretion in ng & Continuous &$[  57.975  -  938908]$ & 410 \\
+Antimony 24h urine\par excretion in ng & Continuous &$[ 4.817  -  11076.800]$ & 410 \\
+Platinum 24h urine\par excretion in ng & Continuous &$[ 3.577  -  74956.460]$ & 410 \\
+Mercury 24h urine\par excretion in ng & Continuous & $[14.910  -  5098.182]$ & 410 \\
+Thallium 24h urine\par excretion in ng & Continuous &  $[52.602  -  36763.830]$ & 410 \\
+Lead 24h urine\par excretion in ng & Continuous &$[ 84.359  -  110999.700]$ & 410 \\
+Bismuth 24h urine\par excretion in ng & Continuous & $[0.375  -  2109.367]$ & 410 \\
+Sodium 24h urine\par excretion in mmol& Continuous&   $[10.500 - 410.519]$ & 152\\ 
+Potassium 24h urine\par excretion in mmol & Continuous&   $[14.853 - 156.070 ]$ & 152\\ 
+Calcium 24h urine\par excretion in mmol & Continuous&   $[0.048 - 13.807]$ & 376\\ 
+Phosphate 24h urine\par excretion in mmol & Continuous&   $[3.000 - 76.370 ]$ & 170\\ 
+Urea 24h urine\par excretion in mmol & Continuous&   $[64.218 - 742.300]$ & 157\\ 
+Magnesium 24h urine \par excretion in mmol & Continuous&   $[0.448 - 10.752]$ & 158\\ 
+Systolic blood pressure in mmHg & Continuous&   $[79.500 - 200.500]$ & 130\\ 
+Diastolic blood pressure in mmHg & Continuous&   $[50.000- 110.500 ]$ & 130\\
+Medical hypertension & Binary & 1 for presence and \par 0 for absence & 133\\
+\end{longtable}
+\label{table:data_urine_description}
+\end{center}
+
+\section{Data preprocessing}
+The following steps have been applied:
+
+\begin{enumerate}
+\item \emph{Removing missing values}. Where a missing value was present in a row of the raw data, the whole row was removed.
+\item \emph{Removing exterme outliers}. The row containing the maximum value of blood insulin (6150 microUI/ml) was also removed since such a concentration would probably be incompatible with the fact that the participant is living\footnote{This value represents more than 420 times the daily insulin dose that physicians generally give to a 70-kg diabetic patient (i.e., ``\emph{In general, individuals with type 1 DM require 0.5–1 U/kg per day of insulin}'' \cite{kasper_harrisons_2015}).}.
+\item \emph{Variable transformation}. All continuous variables were graphically checked. Metal-mixtures, glucose, triglycerides and insulin were log-transformed as done by Pang et al. since they showed distributions with right tails \cite{pang_metal_2016}.
+\end{enumerate}
+
+Following this, $608$ observations without missing values were retained.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
