@@ -12,4 +12,4 @@ I would like also to thank Prof. Murielle Bochud at the Institute of Social and 
 
 ## Access to the PDF
 
-To access the full text, download the file thesis.pdf.
+To access the full text, download the file [thesis.pdf](https://github.com/DDeriaz/Application-on-biochemical-cluster-detection/blob/main/thesis.pdf).
